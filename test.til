@@ -1,0 +1,22 @@
+[main]
+# encode two ascii characters
+# hi
+set 0 0
+set 1 1
+set 2 1
+set 3 0
+set 4 1
+set 5 0
+set 6 0
+set 7 0
+
+set 8 0
+set 10 1
+set 11 1
+set 12 0
+set 13 1
+set 14 0
+set 15 0
+set 16 1
+
+#writestr 0 hi
