@@ -15,7 +15,7 @@ public class Runner
 	private int lineNumber = 0;
 
 	private MemoryHeap randomAccessStack;
-	//private MemoryHeap persistentStorage;
+	private MemoryHeap persistentStorage;
 	private MemoryHeap activeStack = null;
 	
 	public Runner( File sourceFile )
@@ -23,7 +23,8 @@ public class Runner
 		this.sourceFile = sourceFile;
 
 		// 32-bit RAM
-		this.randomAccessStack = new MemoryHeap( 128 );
+		this.randomAccessStack = new MemoryHeap( 32 );
+		//this.persistentStorage = new MemoryHeap( 64 );
 		this.activeStack = this.randomAccessStack;
 	}
 
@@ -63,29 +64,38 @@ public class Runner
 
 	private void parseLine( String line )
 	{
+		// split the instruction
 		String[] instruction = line.split( " " );
 
 		switch ( instruction[0] )
 		{
 			// set the active stack to a reference to the RAM
 			case "[main]" -> this.activeStack = this.randomAccessStack;
-						
+
+			// set a byte
 			case "set" ->
 			{
 				int addr = Integer.parseInt( instruction[1] );
-				boolean val = Integer.parseInt( instruction[2] ) > 0;
 
-				this.activeStack.write( addr, val );
+				this.activeStack.write( addr, instruction[2] );
 			}
 
-			case "cmp" ->
-			{
-				int addr1 = Integer.parseInt( instruction[1] );
-				int addr2 = Integer.parseInt( instruction[2] );
-				int addr3 = Integer.parseInt( instruction[3] );
-				boolean val = this.activeStack.read( addr1 ) && this.activeStack.read( addr2 );
+			// add two bytes together and write the result
+			case "add" -> {}
 
-				this.activeStack.write( addr3, val );
+			// subtract two bytes and return the result
+			case "sub" -> {}
+
+			// interrupt
+			// for use when graphics buffer is implemented
+			case "int " -> {}
+
+			case "setchar" ->
+			{
+				int addr = Integer.parseInt( instruction[1] );
+				char c = instruction[2].charAt( 0 );
+
+				this.activeStack.writeAsciiChar( addr, c );
 			}
 
 			/*case "writestr" ->
@@ -112,7 +122,7 @@ public class Runner
 	{
 		Main.log( "Dumping stack(s)" );
 
-		Main.log( Arrays.toString( this.randomAccessStack.dump() ) );
+		Main.log( this.randomAccessStack.dumpContentsAsString() );
 	}
 	
 	/*public void run()
